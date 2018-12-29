@@ -16,7 +16,6 @@ class Transform1 extends Transform {
         mProject = project
     }
 
-
     @Override
     void transform(Context context, Collection<TransformInput> inputs, Collection<TransformInput> referencedInputs, TransformOutputProvider outputProvider, boolean isIncremental) throws IOException, TransformException, InterruptedException {
         // Transform的inputs有两种类型，一种是目录，一种是jar包，要分开遍历
@@ -24,13 +23,11 @@ class Transform1 extends Transform {
             //对类型为“文件夹”的input进行遍历
             input.directoryInputs.each { DirectoryInput directoryInput ->
                 //文件夹里面包含的是我们手写的类以及R.class、BuildConfig.class以及R$XXX.class等
-//                injectDir(directoryInput.file.absolutePath,"app\\zhp\\com\\gradleplugin")
-                injectDir(directoryInput.file.absolutePath,"com\\lqr\\hotfixdemo")
+                injectDir(directoryInput.file.absolutePath,"app\\zhp\\com\\gradleplugin")
                 // 获取output目录
                 def dest = outputProvider.getContentLocation(directoryInput.name,
                         directoryInput.contentTypes, directoryInput.scopes,
                         Format.DIRECTORY)
-
                 // 将input的目录复制到output指定目录
                 FileUtils.copyDirectory(directoryInput.file, dest)
             }
@@ -70,29 +67,27 @@ class Transform1 extends Transform {
                         int end = filePath.length() - 6 // .class = 6
                         String className = filePath.substring(index, end).replace('\\', '.').replace('/', '.')
                         //开始修改class文件
-                        CtClass c = pool.getCtClass(className)
-                        if (c.isFrozen()) {
-                            c.defrost()
+                        CtClass ctClass = pool.getCtClass(className)
+                        if (ctClass.isFrozen()) {
+                            ctClass.defrost()
                         }
-                        CtConstructor[] cts = c.getDeclaredConstructors()
+                        CtConstructor[] ctConstructor = c.getDeclaredConstructors()
                         pool.importPackage("android.util.Log");
-                        if (cts == null || cts.length == 0) {
+                        if (ctConstructor == null || ctConstructor.length == 0) {
                             //手动创建一个构造函数
-                            CtConstructor constructor = new CtConstructor(new CtClass[0], c)
+                            CtConstructor constructor = new CtConstructor(new CtClass[0], ctClass)
                             constructor.insertBeforeBody(injectStr)
-                            c.addConstructor(constructor)
+                            ctClassaddConstructor(constructor)
                         } else {
-                            cts[0].insertBeforeBody(injectStr)
+                            ctConstructor[0].insertBeforeBody(injectStr)
                         }
-                        c.writeFile(path)
-                        c.detach()
+                        ctClass.writeFile(path)
+                        ctClass.detach()
                     }
                 }
             }
         }
     }
-
-
 
     @Override
     String getName() {

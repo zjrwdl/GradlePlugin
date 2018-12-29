@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'maven'
-//apply plugin: 'com.zhp.plugin'
+apply plugin: 'com.zhp.plugin'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     defaultConfig {
         applicationId "app.zhp.com.gradleplugin"
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -29,14 +29,14 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation 'org.javassist:javassist:3.20.0-GA'
 }
-//buildscript {
-//    repositories {
-//        maven {
-//            url uri('D:/maven_local')
-//        }
-//        mavenCentral()
-//    }
-//    dependencies {
-//        classpath 'com.zhp.plugin:plugin1:1.0.0'
-//    }
-//}
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url uri('D:/maven_local')
+        }
+    }
+    dependencies {
+        classpath 'com.zhp.plugin:plugin1:1.0.0'
+    }
+}
