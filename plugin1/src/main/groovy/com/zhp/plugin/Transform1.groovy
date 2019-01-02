@@ -71,7 +71,7 @@ class Transform1 extends Transform {
                         if (ctClass.isFrozen()) {
                             ctClass.defrost()
                         }
-                        CtConstructor[] ctConstructor = c.getDeclaredConstructors()
+                        CtConstructor[] ctConstructor = ctClass.getDeclaredConstructors()
                         pool.importPackage("android.util.Log");
                         if (ctConstructor == null || ctConstructor.length == 0) {
                             //手动创建一个构造函数
